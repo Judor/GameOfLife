@@ -15,7 +15,7 @@ frame = np.array([[0, 0, 0, 0, 0, 0, 0],
 
 
 def compute_number_neighbors(paded_frame, index_line, index_column):
-    number_neighbors = 0  # Creation of the
+    number_neighbors = 0
 
     for i in range(index_line - 1, index_line + 2):
         for j in range(index_column - 1, index_column + 2):
