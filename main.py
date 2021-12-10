@@ -2,11 +2,9 @@
 # Game Of Life
 # MD4 @ HETIC
 
-
+import pygame
 import numpy as np
 import sys
-
-from render import *
 
 frame = np.array([[0, 0, 0, 0, 0, 0, 0],
                   [0, 0, 0, 0, 0, 0, 0],
@@ -43,15 +41,44 @@ def compute_next_frame(frame):
     return frame
 
 
+def init(WINDOW_HEIGHT, WINDOW_WIDTH):
+    pygame.init()
+    BLACK = (0, 0, 0)
+    WHITE = (255, 255, 255)
+    font = pygame.font.Font('freesansbold.ttf', 36)
+    (width, height) = (WINDOW_HEIGHT, WINDOW_WIDTH)
+    screen = pygame.display.set_mode((width, height))
+    pygame.display.set_caption('Game Of Life')
+    pygame.display.set_icon(pygame.image.load('resources/icon.png'))
+
+    screen.fill(WHITE)
+    pygame.display.flip()
+    return True, False
+
+
 def main():
     argv_list = str(sys.argv)
-    nb_rows = int(argv_list[1])
-    nb_cols = int(argv_list[2])
+    nb_rows = 10
+    nb_cols = 10
+    density = 30
     if len(argv_list) > 2:
         density = argv_list[3]
+
     weight = (nb_rows + 2) * 10
     height = (nb_cols + 2) * 10
-    init(weight, height)
+
+    (running, pause) = init(weight, height)
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_q:
+                    running = False
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_p:
+                    pause = True
+
+        if not pause:
+            pygame.display.update()
 
 
 if __name__ == "__main__":
