@@ -4,6 +4,9 @@
 
 
 import numpy as np
+import sys
+
+from render import *
 
 frame = np.array([[0, 0, 0, 0, 0, 0, 0],
                   [0, 0, 0, 0, 0, 0, 0],
@@ -39,7 +42,22 @@ def compute_next_frame(frame):
     #    frame. If it's the case, update the element in the matrix
     return frame
 
+
+def main():
+    argv_list = str(sys.argv)
+    nb_rows = int(argv_list[1])
+    nb_cols = int(argv_list[2])
+    if len(argv_list) > 2:
+        density = argv_list[3]
+    weight = (nb_rows + 2) * 10
+    height = (nb_cols + 2) * 10
+    init(weight, height)
+
+
+if __name__ == "__main__":
+    main()
 # while True:
+
 #   # Infinite loop that print all the frames . Ctrl + C to stop the computation
 #  print(frame)
 # frame = compute_next_frame
