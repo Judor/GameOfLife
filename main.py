@@ -28,12 +28,41 @@ def compute_number_neighbors(paded_frame, index_line, index_column):
     return number_neighbors
 
 
+def is_playable(paded_frame, index_line, index_column):  # Test if the given case is in the playable frame or not
+    nb_rows, nb_columns = paded_frame.shape
+    return (1 > index_line > nb_rows) & (1 > index_column > nb_columns)
+
+
+def kill(paded_frame, i, j):
+    paded_frame[i][j] = 0
+
+
+def is_alive(paded_frame, i, j):
+    return paded_frame[i][j] == 1
+
+
+def born(paded_frame, i, j):
+    paded_frame[i][j] = 1
+
+
 def compute_next_frame(frame):
-    # TODO --> create a function that takes in entry a frame and compute the next one according to the rules of the game
-    # TODO --> 1rst Step : create the frame with the border :
     paded_frame = np.pad(frame, 1, mode='constant')
+    nb_rows, nb_columns = paded_frame.shape
+    update = False
+    for i in range(1, nb_rows):
+        for j in range(1, nb_columns):
+            if compute_number_neighbors(paded_frame, i, j) >= 3:
+                if not is_alive(paded_frame, i, j):
+                    born(paded_frame, i, j)
+                    update = True
+            else:
+                kill(paded_frame, i, j)
+                update = True
+    return update
+
     # TODO --> 2nd Step : Create 2 nested loops to compute the paded frame element by element. Be careful about the
     #  start and end index
+
     #  TODO --> 3rd Step : Inside the previous interation, we call the function to compute the
     #   number of neighbors
     #   TODO --> 4th Step : For each element, test if their is something updated since the last
@@ -64,8 +93,8 @@ def main():
     if len(argv_list) > 2:
         density = argv_list[3]
 
-    weight = (nb_rows + 2) * 10
-    height = (nb_cols + 2) * 10
+    weight = nb_rows * 10
+    height = nb_cols * 10
 
     (running, pause) = init(weight, height)
     while running:
@@ -73,11 +102,12 @@ def main():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_q:
                     running = False
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_p:
+                elif event.key == pygame.K_p:
                     pause = True
 
         if not pause:
+            # TODO update print frame each time
+            compute_next_frame(frame)
             pygame.display.update()
 
 
