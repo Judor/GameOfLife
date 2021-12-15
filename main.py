@@ -6,13 +6,15 @@ import pygame
 import numpy as np
 import sys
 
-frame = np.array([[0, 0, 0, 0, 0, 0, 0],
-                  [0, 0, 0, 0, 0, 0, 0],
-                  [0, 0, 0, 0, 0, 0, 0],
-                  [0, 0, 1, 1, 1, 0, 0],
-                  [0, 0, 0, 0, 0, 0, 0],
-                  [0, 0, 0, 0, 0, 0, 0],
-                  [0, 0, 0, 0, 0, 0, 0]])
+
+def create_frame():
+    return np.array([[0, 0, 0, 0, 0, 0, 0],
+                     [0, 0, 0, 0, 0, 0, 0],
+                     [0, 0, 0, 0, 0, 0, 0],
+                     [0, 0, 1, 1, 1, 0, 0],
+                     [0, 0, 0, 0, 0, 0, 0],
+                     [0, 0, 0, 0, 0, 0, 0],
+                     [0, 0, 0, 0, 0, 0, 0]])
 
 
 def compute_number_neighbors(paded_frame, index_line, index_column):
@@ -49,8 +51,8 @@ def compute_next_frame(frame):
     paded_frame = np.pad(frame, 1, mode='constant')
     nb_rows, nb_columns = paded_frame.shape
     update = False
-    for i in range(1, nb_rows):
-        for j in range(1, nb_columns):
+    for i in range(1, nb_rows - 1):
+        for j in range(1, nb_columns - 1):
             if compute_number_neighbors(paded_frame, i, j) >= 3:
                 if not is_alive(paded_frame, i, j):
                     born(paded_frame, i, j)
@@ -58,7 +60,6 @@ def compute_next_frame(frame):
             else:
                 kill(paded_frame, i, j)
                 update = True
-    return update
 
     # TODO --> 2nd Step : Create 2 nested loops to compute the paded frame element by element. Be careful about the
     #  start and end index
@@ -85,10 +86,11 @@ def init(WINDOW_HEIGHT, WINDOW_WIDTH):
     return True, False
 
 
-def main():
+def graphic_render():
+    frame = create_frame()
     argv_list = str(sys.argv)
-    nb_rows = 10
-    nb_cols = 10
+    nb_rows = 8
+    nb_cols = 8
     density = 30
     if len(argv_list) > 2:
         density = argv_list[3]
@@ -111,8 +113,26 @@ def main():
             pygame.display.update()
 
 
+def terminal_render():
+    frame = create_frame()
+    argv_list = str(sys.argv)
+    # nb_rows = a
+    # nb_cols = 8
+    # density = 30
+    if len(argv_list) > 2:
+        density = argv_list[3]
+    days = 0
+    while days < 10:
+        print(frame)
+        print(days)
+        frame = compute_next_frame(frame)
+        days = days + 1
+
+
 if __name__ == "__main__":
-    main()
+    # graphic_render()
+    terminal_render()
+
 # while True:
 
 #   # Infinite loop that print all the frames . Ctrl + C to stop the computation
