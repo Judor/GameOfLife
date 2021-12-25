@@ -52,17 +52,19 @@ def unPad_frame(paded_frame):
 
 
 def compute_next_frame(frame):
+    # TODO update te function to make the changes to a new frame instead of using the old one that destroy the game
     paded_frame = np.pad(frame, 1, mode='constant')
+    new_frame = paded_frame.copy()
     nb_rows, nb_columns = paded_frame.shape
     update = False
     for i in range(1, nb_rows - 1):
         for j in range(1, nb_columns - 1):
             if compute_number_neighbors(paded_frame, i, j) >= 3:
                 if not is_alive(paded_frame, i, j):
-                    born(paded_frame, i, j)
+                    born(new_frame, i, j)
                     update = True
             else:
-                kill(paded_frame, i, j)
+                kill(new_frame, i, j)
                 update = True
 
     # TODO --> 2nd Step : Create 2 nested loops to compute the paded frame element by element. Be careful about the
@@ -73,7 +75,7 @@ def compute_next_frame(frame):
     #   TODO --> 4th Step : For each element, test if their is something updated since the last
     #    frame. If it's the case, update the element in the matrix
 
-    return frame
+    return update, unPad_frame(paded_frame)
 
 
 def init(WINDOW_HEIGHT, WINDOW_WIDTH):
@@ -119,6 +121,7 @@ def graphic_render():
 
 
 def terminal_render():
+    # TODO create a function that stops the render if no change is detected. Usage of a boolean
     frame = create_frame()
     argv_list = str(sys.argv)
     # nb_rows = a
@@ -130,7 +133,9 @@ def terminal_render():
     while days < 10:
         print(frame)
         print(days)
-        frame = compute_next_frame(frame)
+        update, frame = compute_next_frame(frame)
+        if not update:
+            break
         days = days + 1
 
 
