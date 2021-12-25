@@ -47,6 +47,10 @@ def born(paded_frame, i, j):
     paded_frame[i][j] = 1
 
 
+def unPad_frame(paded_frame):
+    return np.delete(np.delete(paded_frame, [0, 7], 0), [0, 7], 1)
+
+
 def compute_next_frame(frame):
     paded_frame = np.pad(frame, 1, mode='constant')
     nb_rows, nb_columns = paded_frame.shape
@@ -68,6 +72,7 @@ def compute_next_frame(frame):
     #   number of neighbors
     #   TODO --> 4th Step : For each element, test if their is something updated since the last
     #    frame. If it's the case, update the element in the matrix
+
     return frame
 
 
@@ -108,7 +113,7 @@ def graphic_render():
                     pause = True
 
         if not pause:
-            # TODO update print frame each time
+            #  TODO update print frame each time
             compute_next_frame(frame)
             pygame.display.update()
 
