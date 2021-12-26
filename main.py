@@ -5,6 +5,7 @@
 import pygame
 import numpy as np
 import sys
+import optparse
 
 
 def create_frame():
@@ -20,6 +21,10 @@ def create_frame():
 # TODO create a function that takes in entry number of rows and cols and returns an array with a given density
 def create_density_frame(nb_rows, nb_cols, density):
     return True
+
+
+def create_frame_from_file(nb_rows, nb_cols, file):
+    return np.loadtxt(file).reshape(nb_rows, nb_cols).astype(int)
 
 
 def compute_number_neighbors(paded_frame, index_line, index_column):
@@ -122,6 +127,7 @@ def graphic_render():
 
 
 def terminal_render():
+    # TODO include I/O from a file, import it, get rows, cols and pattern, and then close it
     frame = create_frame()
     argv_list = str(sys.argv)
     # nb_rows = a
@@ -143,11 +149,25 @@ def terminal_render():
 
 
 if __name__ == "__main__":
-    # graphic_render()
-    terminal_render()
+    # create OptionParser object
+    parser = optparse.OptionParser()
 
-# while True:
+    # While launching the program, type -g to render with pygame, -t to render in the terminal,
+    # and -f to import the array from a file
 
-#   # Infinite loop that print all the frames . Ctrl + C to stop the computation
-#  print(frame)
-# frame = compute_next_frame
+    parser.add_option('-g', dest='graphic', action='store_true',
+                      help='Render the game in a graphic window using PyGame')
+    parser.add_option('-t', dest='terminal',
+                      action='store_true',
+                      help='Render the game in a terminal window')
+    parser.add_option("-f", dest="import_file",
+                      action='store_true',
+                      default=False,
+                      help="a ")
+    (options, args) = parser.parse_args()
+
+    if options.terminal:
+        terminal_render(options.import_file())
+
+    elif options.graphic:
+        graphic_render()
