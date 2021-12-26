@@ -17,6 +17,11 @@ def create_frame():
                      [0, 0, 0, 0, 0, 0, 0]])
 
 
+# TODO create a function that takes in entry number of rows and cols and returns an array with a given density
+def create_density_frame(nb_rows, nb_cols, density):
+    return True
+
+
 def compute_number_neighbors(paded_frame, index_line, index_column):
     number_neighbors = 0
 
@@ -35,16 +40,16 @@ def is_playable(paded_frame, index_line, index_column):  # Test if the given cas
     return (1 > index_line > nb_rows) & (1 > index_column > nb_columns)
 
 
-def kill(paded_frame, i, j):
-    paded_frame[i][j] = 0
+def kill(frame, i, j):
+    frame[i][j] = 0
 
 
-def is_alive(paded_frame, i, j):
-    return paded_frame[i][j] == 1
+def is_alive(frame, i, j):
+    return frame[i][j] == 1
 
 
-def born(paded_frame, i, j):
-    paded_frame[i][j] = 1
+def born(frame, i, j):
+    frame[i][j] = 1
 
 
 def unPad_frame(paded_frame):
@@ -52,30 +57,26 @@ def unPad_frame(paded_frame):
 
 
 def compute_next_frame(frame):
-    # TODO update te function to make the changes to a new frame instead of using the old one that destroy the game
     paded_frame = np.pad(frame, 1, mode='constant')
     new_frame = paded_frame.copy()
     nb_rows, nb_columns = paded_frame.shape
     update = False
+
     for i in range(1, nb_rows - 1):
         for j in range(1, nb_columns - 1):
-            if compute_number_neighbors(paded_frame, i, j) >= 3:
-                if not is_alive(paded_frame, i, j):
-                    born(new_frame, i, j)
+            neighbors = compute_number_neighbors(paded_frame, i, j)
+            if is_alive(paded_frame, i, j):
+                if neighbors < 2:  # Rule 1
+                    kill(new_frame, i, j)
                     update = True
-            else:
-                kill(new_frame, i, j)
+                if neighbors > 3:  # Rule 2
+                    kill(new_frame, i, j)
+                    update = True
+            if neighbors == 3:  # Rule 4
+                born(new_frame, i, j)
                 update = True
 
-    # TODO --> 2nd Step : Create 2 nested loops to compute the paded frame element by element. Be careful about the
-    #  start and end index
-
-    #  TODO --> 3rd Step : Inside the previous interation, we call the function to compute the
-    #   number of neighbors
-    #   TODO --> 4th Step : For each element, test if their is something updated since the last
-    #    frame. If it's the case, update the element in the matrix
-
-    return update, unPad_frame(paded_frame)
+    return update, unPad_frame(new_frame)
 
 
 def init(WINDOW_HEIGHT, WINDOW_WIDTH):
@@ -121,7 +122,6 @@ def graphic_render():
 
 
 def terminal_render():
-    # TODO create a function that stops the render if no change is detected. Usage of a boolean
     frame = create_frame()
     argv_list = str(sys.argv)
     # nb_rows = a
@@ -129,14 +129,17 @@ def terminal_render():
     # density = 30
     if len(argv_list) > 2:
         density = argv_list[3]
+    # Init for the computation loop
     days = 0
-    while days < 10:
-        print(frame)
-        print(days)
+    update = True  # Boolean that stops the computation if no change is detected
+    print("The first day :")
+    print(frame)
+    while days < 10 & update:
         update, frame = compute_next_frame(frame)
-        if not update:
-            break
         days = days + 1
+        print("Day number" + str(days) + ":")
+        print(frame)
+    print("Fin de la simulation")
 
 
 if __name__ == "__main__":
