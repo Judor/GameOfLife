@@ -126,15 +126,13 @@ def graphic_render():
             pygame.display.update()
 
 
-def terminal_render():
-    # TODO include I/O from a file, import it, get rows, cols and pattern, and then close it
-    frame = create_frame()
-    argv_list = str(sys.argv)
-    # nb_rows = a
-    # nb_cols = 8
-    # density = 30
-    if len(argv_list) > 2:
-        density = argv_list[3]
+def terminal_render(file):
+    if file:
+        # TODO find how to get nb_rows & cols from the array in the file
+        nb_rows = nb_cols = 7
+        frame = np.loadtxt(file).reshape(nb_rows, nb_cols).astype(int)
+    else:
+        frame = create_frame()
     # Init for the computation loop
     days = 0
     update = True  # Boolean that stops the computation if no change is detected
@@ -167,7 +165,7 @@ if __name__ == "__main__":
     (options, args) = parser.parse_args()
 
     if options.terminal:
-        terminal_render(options.import_file())
+        terminal_render(options.import_file)
 
     elif options.graphic:
         graphic_render()
