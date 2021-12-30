@@ -129,10 +129,11 @@ def graphic_render():
 
 
 def terminal_render(file):
+    # TODO arrange the update boolean
     if file:
-        # TODO find how to get nb_rows & cols from the array in the file
+        # TODO find how to get nb_rows & cols from the array in the file. To play with bigger frames
         nb_rows = nb_cols = 7
-        frame = np.loadtxt(file).reshape(nb_rows, nb_cols).astype(int)
+        frame = np.loadtxt('save.txt').reshape(nb_rows, nb_cols).astype(int)
     else:
         frame = create_frame()
     # Init for the computation loop
@@ -147,6 +148,7 @@ def terminal_render(file):
         days = days + 1
         print("Day " + str(days) + " :")
         print(frame)
+    np.savetxt('save.txt', frame)
     print("Fin de la simulation")
 
 
