@@ -6,6 +6,8 @@ import pygame
 import numpy as np
 import sys
 import optparse
+import os
+import time
 
 
 def create_frame():
@@ -138,10 +140,12 @@ def terminal_render(file):
     update = True  # Boolean that stops the computation if no change is detected
     print("The first day :")
     print(frame)
-    while days < 10 & update:
+    while days < 10:
+        time.sleep(0.8)  # Pause in the computation to get to the chance to see the change
+        os.system('cls' if os.name == 'nt' else 'clear')  # Clear the terminal each time for better visibility
         update, frame = compute_next_frame(frame)
         days = days + 1
-        print("Day number" + str(days) + ":")
+        print("Day " + str(days) + " :")
         print(frame)
     print("Fin de la simulation")
 
