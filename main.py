@@ -148,7 +148,6 @@ def terminal_render(file):
         days = days + 1
         print("Day " + str(days) + " :")
         print(frame)
-    np.savetxt('save.txt', frame)
     print("Fin de la simulation")
 
 
