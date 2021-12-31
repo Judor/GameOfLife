@@ -60,7 +60,8 @@ def born(frame, i, j):
 
 
 def unPad_frame(paded_frame):
-    return np.delete(np.delete(paded_frame, [0, 7], 0), [0, 7], 1)
+    (nb_rows, nb_cols) = np.shape(paded_frame)
+    return np.delete(np.delete(paded_frame, [0, nb_rows - 2], 0), [0, nb_cols - 2], 1)
 
 
 def compute_next_frame(frame):
