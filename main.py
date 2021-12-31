@@ -129,10 +129,10 @@ def graphic_render():
 
 
 def terminal_render(file):
-    if file:
-        frame = np.loadtxt('save.txt').astype(int)
-    else:
+    if file == 'default':
         frame = create_frame()
+    else:
+        frame = np.loadtxt(file).astype(int)
     # Init for the computation loop
     days = 0
     update = True  # Boolean that stops the computation if no change is detected
@@ -160,14 +160,15 @@ if __name__ == "__main__":
     parser.add_option('-t', dest='terminal',
                       action='store_true',
                       help='Render the game in a terminal window')
-    parser.add_option("-f", dest="import_file",
-                      action='store_true',
-                      default=False,
-                      help="a ")
+    parser.add_option("-f", "--filename", dest='test', type='str', metavar='STR',
+                      help="Use the array in the file to create the frame")
     (options, args) = parser.parse_args()
 
     if options.terminal:
-        terminal_render(options.import_file)
+        if options.test:
+            terminal_render(options.test)
+        else:
+            terminal_render('default')
 
     elif options.graphic:
         graphic_render()
