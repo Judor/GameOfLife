@@ -130,9 +130,7 @@ def graphic_render():
 
 def terminal_render(file):
     if file:
-        # TODO find how to get nb_rows & cols from the array in the file. To play with bigger frames
-        nb_rows = nb_cols = 7
-        frame = np.loadtxt('save.txt').reshape(nb_rows, nb_cols).astype(int)
+        frame = np.loadtxt('save.txt').astype(int)
     else:
         frame = create_frame()
     # Init for the computation loop
