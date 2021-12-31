@@ -83,7 +83,6 @@ def compute_next_frame(frame):
             if neighbors == 3:  # Rule 4
                 born(new_frame, i, j)
                 update = True
-
     return update, unPad_frame(new_frame)
 
 
@@ -130,7 +129,6 @@ def graphic_render():
 
 
 def terminal_render(file):
-    # TODO arrange the update boolean
     if file:
         # TODO find how to get nb_rows & cols from the array in the file. To play with bigger frames
         nb_rows = nb_cols = 7
@@ -142,7 +140,7 @@ def terminal_render(file):
     update = True  # Boolean that stops the computation if no change is detected
     print("The first day :")
     print(frame)
-    while days < 10:
+    while (days < 10) & update:
         time.sleep(0.8)  # Pause in the computation to get to the chance to see the change
         os.system('cls' if os.name == 'nt' else 'clear')  # Clear the terminal each time for better visibility
         update, frame = compute_next_frame(frame)
