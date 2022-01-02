@@ -4,7 +4,6 @@
 
 import pygame
 import numpy as np
-import sys
 import optparse
 import os
 import time
@@ -20,11 +19,6 @@ def create_frame():
                      [0, 0, 0, 0, 0, 0, 0]])
 
 
-# TODO create a function that takes in entry number of rows and cols and returns an array with a given density
-def create_density_frame(nb_rows, nb_cols, density):
-    return True
-
-
 def create_frame_from_file(nb_rows, nb_cols, file):
     return np.loadtxt(file).reshape(nb_rows, nb_cols).astype(int)
 
@@ -38,7 +32,6 @@ def compute_number_neighbors(paded_frame, index_line, index_column):
 
     number_neighbors = number_neighbors - paded_frame[index_line, index_column]  # Suppression of cell in entry
 
-    # TODO --> Optimize the function to skip the cell in entry
     return number_neighbors
 
 
@@ -88,9 +81,7 @@ def compute_next_frame(frame):
 
 def init(WINDOW_HEIGHT, WINDOW_WIDTH):
     pygame.init()
-    BLACK = (0, 0, 0)
     WHITE = (255, 255, 255)
-    font = pygame.font.Font('freesansbold.ttf', 36)
     (width, height) = (WINDOW_HEIGHT, WINDOW_WIDTH)
     screen = pygame.display.set_mode((width, height))
     pygame.display.set_caption('Game Of Life')
@@ -101,17 +92,15 @@ def init(WINDOW_HEIGHT, WINDOW_WIDTH):
     return True, False
 
 
-def graphic_render():
-    frame = create_frame()
-    argv_list = str(sys.argv)
-    nb_rows = 8
-    nb_cols = 8
-    density = 30
-    if len(argv_list) > 2:
-        density = argv_list[3]
+def graphic_render(file):
+    if file == 'default':
+        frame = create_frame()
+    else:
+        frame = np.loadtxt(file).astype(int)
 
+    nb_rows, nb_columns = frame.shape
     weight = nb_rows * 10
-    height = nb_cols * 10
+    height = nb_columns * 10
 
     (running, pause) = init(weight, height)
     while running:
@@ -123,12 +112,11 @@ def graphic_render():
                     pause = True
 
         if not pause:
-            #  TODO update print frame each time
             compute_next_frame(frame)
             pygame.display.update()
 
 
-def terminal_render(file):
+def terminal_render(file, max_days):
     if file == 'default':
         frame = create_frame()
     else:
@@ -138,7 +126,7 @@ def terminal_render(file):
     update = True  # Boolean that stops the computation if no change is detected
     print("The first day :")
     print(frame)
-    while (days < 10) & update:
+    while (days < max_days) & update:
         time.sleep(0.8)  # Pause in the computation to get to the chance to see the change
         os.system('cls' if os.name == 'nt' else 'clear')  # Clear the terminal each time for better visibility
         update, frame = compute_next_frame(frame)
@@ -164,11 +152,12 @@ if __name__ == "__main__":
                       help="Use the array in the file to create the frame")
     (options, args) = parser.parse_args()
 
+    days_max = 50
     if options.terminal:
         if options.test:
-            terminal_render(options.test)
+            terminal_render(options.test, days_max)
         else:
-            terminal_render('default')
+            terminal_render('default', days_max)
 
     elif options.graphic:
         graphic_render()
