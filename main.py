@@ -19,10 +19,6 @@ def create_frame():
                      [0, 0, 0, 0, 0, 0, 0]])
 
 
-def create_frame_from_file(nb_rows, nb_cols, file):
-    return np.loadtxt(file).reshape(nb_rows, nb_cols).astype(int)
-
-
 def compute_number_neighbors(paded_frame, index_line, index_column):
     number_neighbors = 0
 
@@ -30,7 +26,8 @@ def compute_number_neighbors(paded_frame, index_line, index_column):
         for j in range(index_column - 1, index_column + 2):
             number_neighbors = number_neighbors + paded_frame[i][j]
 
-    number_neighbors = number_neighbors - paded_frame[index_line, index_column]  # Suppression of cell in entry
+    number_neighbors = number_neighbors - paded_frame[
+        index_line, index_column]  # Suppression of cell in entry to not count it twice
 
     return number_neighbors
 
@@ -39,6 +36,7 @@ def kill(frame, i, j):
     frame[i][j] = 0
 
 
+# returns a True or False boolean to tell if the frame contains a living cell at this very point
 def is_alive(frame, i, j):
     return frame[i][j] == 1
 
@@ -55,9 +53,10 @@ def unPad_frame(paded_frame):
 
 def compute_next_frame(frame):
     paded_frame = np.pad(frame, 1, mode='constant')
-    new_frame = paded_frame.copy()
+    new_frame = paded_frame.copy()  # We will work on the copy of the frame to not alter it while we're running
+    # through it
     nb_rows, nb_columns = paded_frame.shape
-    update = False
+    update = False  # Set the update boolean to false to stop the computation if no change is detected
 
     for i in range(1, nb_rows - 1):
         for j in range(1, nb_columns - 1):
@@ -156,4 +155,4 @@ if __name__ == "__main__":
             terminal_render('default', days_max)
 
     elif options.graphic:
-        graphic_render()
+        graphic_render('file')
