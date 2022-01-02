@@ -35,11 +35,6 @@ def compute_number_neighbors(paded_frame, index_line, index_column):
     return number_neighbors
 
 
-def is_playable(paded_frame, index_line, index_column):  # Test if the given case is in the playable frame or not
-    nb_rows, nb_columns = paded_frame.shape
-    return (1 > index_line > nb_rows) & (1 > index_column > nb_columns)
-
-
 def kill(frame, i, j):
     frame[i][j] = 0
 
@@ -48,13 +43,14 @@ def is_alive(frame, i, j):
     return frame[i][j] == 1
 
 
-def born(frame, i, j):
+def new_cell(frame, i, j):
     frame[i][j] = 1
 
 
 def unPad_frame(paded_frame):
-    (nb_rows, nb_cols) = np.shape(paded_frame)
-    return np.delete(np.delete(paded_frame, [0, nb_rows - 2], 0), [0, nb_cols - 2], 1)
+    (nb_rows, nb_columns) = np.shape(paded_frame)
+    return np.delete(np.delete(paded_frame, [0, nb_rows - 2], 0), [0, nb_columns - 2], 1)  # Suppression of the borders
+    # : first and last row and column witch are the axis 0 & 1
 
 
 def compute_next_frame(frame):
@@ -74,7 +70,7 @@ def compute_next_frame(frame):
                     kill(new_frame, i, j)
                     update = True
             if neighbors == 3:  # Rule 4
-                born(new_frame, i, j)
+                new_cell(new_frame, i, j)
                 update = True
     return update, unPad_frame(new_frame)
 
