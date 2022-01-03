@@ -72,8 +72,9 @@ def compute_next_frame(frame):
                     kill(new_frame, i, j)
                     update = True
             if neighbors == 3:  # Rule 4
-                new_cell(new_frame, i, j)
-                update = True
+                if not is_alive(paded_frame, i, j):
+                    new_cell(new_frame, i, j)
+                    update = True
     return update, unPad_frame(new_frame)
 
 
@@ -153,6 +154,7 @@ if __name__ == "__main__":
     (options, args) = parser.parse_args()
 
     days_max = 50
+
     if options.graphic:
         if options.file:
             graphic_render(options.file, days_max)
