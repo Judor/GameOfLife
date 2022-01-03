@@ -32,19 +32,22 @@ def compute_number_neighbors(paded_frame, index_line, index_column):
     return number_neighbors
 
 
+# kills the cell at the given point on the frame
 def kill(frame, i, j):
     frame[i][j] = 0
 
 
-# returns a True or False boolean to tell if the frame contains a living cell at this very point
+# returns a True or False boolean to tell if the frame contains a living cell at the given point on the frame
 def is_alive(frame, i, j):
     return frame[i][j] == 1
 
 
+# creates a new cell at the given point on the frame
 def new_cell(frame, i, j):
     frame[i][j] = 1
 
 
+# unpad the given paded_frame
 def unPad_frame(paded_frame):
     (nb_rows, nb_columns) = np.shape(paded_frame)
     return np.delete(np.delete(paded_frame, [0, nb_rows - 2], 0), [0, nb_columns - 2], 1)  # Suppression of the borders
@@ -87,16 +90,18 @@ def init(WINDOW_HEIGHT, WINDOW_WIDTH):
     return True, False
 
 
-def graphic_render(file):
+def graphic_render(file, days_max):
     if file == 'default':
         frame = create_frame()
     else:
         frame = np.loadtxt(file).astype(int)
-
+    # Init for the parameters of the graphic function
     nb_rows, nb_columns = frame.shape
     weight = nb_rows * 10
     height = nb_columns * 10
-
+    # Init for the computation loop
+    days = 0
+    update = True  # Boolean that stops the computation if no change is detected
     (running, pause) = init(weight, height)
     while running:
         for event in pygame.event.get():
@@ -105,13 +110,12 @@ def graphic_render(file):
                     running = False
                 elif event.key == pygame.K_p:
                     pause = True
-
         if not pause:
             compute_next_frame(frame)
             pygame.display.update()
 
 
-def terminal_render(file, max_days):
+def terminal_render(file, days_max):
     if file == 'default':
         frame = create_frame()
     else:
@@ -121,7 +125,7 @@ def terminal_render(file, max_days):
     update = True  # Boolean that stops the computation if no change is detected
     print("The first day :")
     print(frame)
-    while (days < max_days) & update:
+    while (days < days_max) & update:
         time.sleep(0.8)  # Pause in the computation to get to the chance to see the change
         os.system('cls' if os.name == 'nt' else 'clear')  # Clear the terminal each time for better visibility
         update, frame = compute_next_frame(frame)
@@ -143,16 +147,20 @@ if __name__ == "__main__":
     parser.add_option('-t', dest='terminal',
                       action='store_true',
                       help='Render the game in a terminal window')
-    parser.add_option("-f", "--filename", dest='test', type='str', metavar='STR',
-                      help="Use the array in the file to create the frame")
+    parser.add_option("-f", "--filename", dest='file', type='str', metavar='STR',
+                      help="Use the array in the file to create the frame. Expected -f FILENAME with filename as a "
+                           "file address")
     (options, args) = parser.parse_args()
 
     days_max = 50
-    if options.terminal:
-        if options.test:
-            terminal_render(options.test, days_max)
+    if options.graphic:
+        if options.file:
+            graphic_render(options.file, days_max)
         else:
             terminal_render('default', days_max)
 
-    elif options.graphic:
-        graphic_render('file')
+    elif options.terminal:
+        if options.file:
+            terminal_render(options.file, days_max)
+        else:
+            terminal_render('default', days_max)
