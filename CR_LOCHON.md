@@ -34,6 +34,9 @@ Pour ce faire, on a utilisé plusieurs packages avec chacun une utilisation pré
 - __time__ -> Pour faire des pauses dans chaque tour de jour afin de bien voir le changement de chaque génération
 
 
+Le jeu s'arrête soit au bon d'un certain nombre de jours, que l'on peut choisir dans la fonction __main__ du jeu ligne 156. Ou bien lorsqu’aucun changement n’est détecté entre 2 jours d’affilées. On peut choisir de régler la vitesse du jeu dans la fonction __terminal_render()__, en modifiant la ligne __time.sleep()__, et indiquant dans les parenthèses la durée choisie en secondes entre chaque jour.
+
+
 ###Ce qu'on a appris :
 L'utilisation des parsers avec optparse, afin de pouvoir utiliser des arguments au lancement du jeu et personnaliser l'expérience globale avec des fichiers de sauvegarde. On à également vu l'I/O. Nous avons aussi découvert succinctement comment fonctionnait pygame.
 
